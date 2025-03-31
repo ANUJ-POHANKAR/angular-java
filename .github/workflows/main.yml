@@ -1,5 +1,7 @@
 name: workflow-call
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
 jobs:
   build:
     uses: ANUJ-POHANKAR/book-page-1/.github/workflows/main.yml@main
