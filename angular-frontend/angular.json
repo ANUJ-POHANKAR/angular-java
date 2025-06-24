@@ -4,7 +4,7 @@
   "newProjectRoot": "projects",
   "projects": {
     "angular-frontend": {
-      "projectType": "application",
+      "projectType": "application1",
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
