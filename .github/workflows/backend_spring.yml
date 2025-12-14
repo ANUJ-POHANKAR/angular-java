@@ -12,47 +12,35 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
-      # 1️⃣ Checkout source code
       - uses: actions/checkout@v4
 
-      # 2️⃣ Setup Java 11
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'microsoft'
 
-      # 3️⃣ Build Spring Boot JAR (IMPORTANT: run where pom.xml exists)
       - name: Build with Maven
-        working-directory: backend
         run: mvn clean package -Dmaven.test.skip=true
 
-      # 4️⃣ Upload JAR artifact
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: backend/target/*.jar
+          path: target/*.jar
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      id-token: write
-      contents: read
-  
+
     steps:
-      # 5️⃣ Download built JAR
-      - name: Download artifact from build job
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: java-app
 
-      # 6️⃣ Login to Azure
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -60,7 +48,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C53BB3DBB5DC4022934811CADA1AB1D7 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_455F9D1C802746038C854F9953D77354 }}
 
-      # 7️⃣ Deploy JAR to Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
@@ -68,5 +55,3 @@ jobs:
           slot-name: 'Production'
           package: 'java-app/*.jar'
 
-
-          
